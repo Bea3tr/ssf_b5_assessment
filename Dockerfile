@@ -13,7 +13,9 @@ FROM eclipse-temurin:23-jre-noble
 
 WORKDIR /app
 
-COPY --from=builder /src/target/noticeboardapp-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=builder /src/target/noticeboard-0.0.1-SNAPSHOT.jar app.jar
+
+RUN apt update && apt install -y curl
 
 ENV PORT=8080
 EXPOSE ${PORT}
@@ -21,6 +23,9 @@ EXPOSE ${PORT}
 ENV SERVER_NAME=http://localhost:8080
 ENV NOTICEBOARD_DB_HOST=localhost NOTICEBOARD_DB_PORT=6379
 ENV NOTICEBOARD_DB_USERNAME="" NOTICEBOARD_DB_PASSWORD=""
+
+HEALTHCHECK --interval= --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f -s http://localhost:${PORT}/status || exit 1
 
 ENTRYPOINT SERVER_PORT=${PORT} java -jar app.jar
 

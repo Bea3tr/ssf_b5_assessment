@@ -3,7 +3,6 @@ package vttp.batch5.ssf.noticeboard.controllers;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,9 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import jakarta.json.Json;
-import jakarta.json.JsonArrayBuilder;
-import jakarta.json.JsonObject;
 import jakarta.validation.Valid;
 import vttp.batch5.ssf.noticeboard.models.Notice;
 import vttp.batch5.ssf.noticeboard.services.NoticeService;
@@ -46,7 +42,7 @@ public class NoticeController {
             return "notice";
         
         String message = noticeSvc.postToNoticeServer(notice);
-        if(message.contains("error")) {
+        if(message.length() > 1) {
             model.addAttribute("error", message);
             return "view3";
         }

@@ -37,11 +37,11 @@ public class NoticeService {
 	public String postToNoticeServer(Notice notice) {
 		String noticeObj = noticeToJsonString(notice);
 		logger.info("[Service] " + noticeObj);
-		
+
 		RequestEntity<String> req = RequestEntity.post(PUB_URL)
 			.contentType(MediaType.APPLICATION_JSON)
 			.accept(MediaType.APPLICATION_JSON)
-			.body(noticeObj);
+			.body("{notice}");
 
 		RestTemplate template = new RestTemplate();
 		try {
@@ -52,8 +52,12 @@ public class NoticeService {
 			return getPostId(payload);
 			
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			return "I/O error on POST request for \"%s/notice\": Connection refused".formatted(SERVER_URL);
+			int start = ex.getMessage().indexOf("\"{");
+			int end = ex.getMessage().indexOf("}\"");
+			String errorJson = ex.getMessage().substring(start+1, end+1);
+			logger.info("[Service] " + errorJson);
+			String message = Json.createReader(new StringReader(errorJson)).readObject().getString("message");
+			return message;
 		}
 	}
 
