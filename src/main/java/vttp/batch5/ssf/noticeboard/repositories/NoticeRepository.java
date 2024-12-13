@@ -31,13 +31,14 @@ public class NoticeRepository {
 	 *
 	 *
 	 */
-	// set obj.getString("id") obj.toString()
+	// set <postId> <jsonString>
 	public void insertNotices(String payload) {
 		JsonReader reader = Json.createReader(new StringReader(payload));
 		JsonObject obj = reader.readObject();
 		redisTemplate.opsForValue().set(obj.getString("id"), obj.toString());
 	}
 
+	// randomkey
 	public void checkHealth() throws Exception {
 		redisTemplate.randomKey();
 	}

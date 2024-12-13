@@ -45,9 +45,7 @@ public class NoticeController {
         if(bindings.hasErrors())
             return "notice";
         
-        String noticeObj = noticeSvc.noticeToJsonString(notice);
-        logger.info("[Controller] " + noticeObj);
-        String message = noticeSvc.postToNoticeServer(noticeObj);
+        String message = noticeSvc.postToNoticeServer(notice);
         if(message.contains("error")) {
             model.addAttribute("error", message);
             return "view3";

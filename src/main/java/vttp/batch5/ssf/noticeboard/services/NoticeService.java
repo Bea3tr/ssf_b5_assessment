@@ -1,6 +1,7 @@
 package vttp.batch5.ssf.noticeboard.services;
 
 import java.io.StringReader;
+import java.util.logging.Logger;
 
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +29,25 @@ public class NoticeService {
 	private String SERVER_URL;
 
 	private static final String PUB_URL = "https://publishing-production-d35a.up.railway.app/notice";
+	private static final Logger logger = Logger.getLogger(NoticeRepository.class.getName());
+
 	// TODO: Task 3
 	// You can change the signature of this method by adding any number of parameters
 	// and return any type
-	public String postToNoticeServer(String notice) {
+	public String postToNoticeServer(Notice notice) {
+		String noticeObj = noticeToJsonString(notice);
+		logger.info("[Service] " + noticeObj);
+		
 		RequestEntity<String> req = RequestEntity.post(PUB_URL)
 			.contentType(MediaType.APPLICATION_JSON)
 			.accept(MediaType.APPLICATION_JSON)
-			.body(notice);
+			.body(noticeObj);
 
 		RestTemplate template = new RestTemplate();
 		try {
 			ResponseEntity<String> resp = template.exchange(req, String.class);
 			String payload = resp.getBody();
+			logger.info("[Service] Payload: " + payload);
 			noticeRepo.insertNotices(payload);
 			return getPostId(payload);
 			
@@ -69,7 +76,7 @@ public class NoticeService {
         }
 	}
 
-	public String noticeToJsonString(Notice notice) {
+	private String noticeToJsonString(Notice notice) {
 		JsonArrayBuilder catArrBuilder = Json.createArrayBuilder();
         for(String category : notice.getCategories()) {
             catArrBuilder.add(category);
