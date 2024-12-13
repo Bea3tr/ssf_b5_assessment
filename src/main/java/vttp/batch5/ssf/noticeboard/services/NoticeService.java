@@ -3,9 +3,7 @@ package vttp.batch5.ssf.noticeboard.services;
 import java.io.StringReader;
 import java.util.logging.Logger;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +23,6 @@ public class NoticeService {
 	@Autowired
 	private NoticeRepository noticeRepo;
 
-	@Value("${server.name}")
-	private String SERVER_URL;
-
 	private static final String PUB_URL = "https://publishing-production-d35a.up.railway.app/notice";
 	private static final Logger logger = Logger.getLogger(NoticeRepository.class.getName());
 
@@ -41,7 +36,7 @@ public class NoticeService {
 		RequestEntity<String> req = RequestEntity.post(PUB_URL)
 			.contentType(MediaType.APPLICATION_JSON)
 			.accept(MediaType.APPLICATION_JSON)
-			.body("{notice}");
+			.body(noticeObj);
 
 		RestTemplate template = new RestTemplate();
 		try {

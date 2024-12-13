@@ -42,10 +42,12 @@ public class NoticeController {
             return "notice";
         
         String message = noticeSvc.postToNoticeServer(notice);
-        if(message.length() > 1) {
+        if(message.split(" ").length > 1) {
+            logger.info("[Controller] Error posting to service");
             model.addAttribute("error", message);
             return "view3";
         }
+        logger.info("[Controller] Successful post");
         model.addAttribute("id", message);
         return "view2";
     }
