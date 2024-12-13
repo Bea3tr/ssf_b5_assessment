@@ -4,6 +4,7 @@ import java.io.StringReader;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,9 @@ public class NoticeService {
 	@Autowired
 	private NoticeRepository noticeRepo;
 
-	private static final String PUB_URL = "https://publishing-production-d35a.up.railway.app/notice";
+	@Value("${publish.url}")
+	private String PUB_URL;
+
 	private static final Logger logger = Logger.getLogger(NoticeRepository.class.getName());
 
 	// TODO: Task 3
@@ -33,6 +36,7 @@ public class NoticeService {
 		String noticeObj = noticeToJsonString(notice);
 		logger.info("[Service] " + noticeObj);
 
+		// Submit user's details to API
 		RequestEntity<String> req = RequestEntity.post(PUB_URL)
 			.contentType(MediaType.APPLICATION_JSON)
 			.accept(MediaType.APPLICATION_JSON)
@@ -44,6 +48,7 @@ public class NoticeService {
 			String payload = resp.getBody();
 			logger.info("[Service] Payload: " + payload);
 			noticeRepo.insertNotices(payload);
+			// Success - return notice id
 			return getPostId(payload);
 			
 		} catch (Exception ex) {
@@ -52,6 +57,7 @@ public class NoticeService {
 			String errorJson = ex.getMessage().substring(start+1, end+1);
 			logger.info("[Service] " + errorJson);
 			String message = Json.createReader(new StringReader(errorJson)).readObject().getString("message");
+			// Unsuccessful - return error message
 			return message;
 		}
 	}

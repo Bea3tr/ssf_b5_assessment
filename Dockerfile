@@ -20,11 +20,11 @@ RUN apt update && apt install -y curl
 ENV PORT=8080
 EXPOSE ${PORT}
 
-ENV SERVER_NAME=http://localhost:8080
+ENV PUBLISH_URL=https://publishing-production-d35a.up.railway.app/notice
 ENV NOTICEBOARD_DB_HOST=localhost NOTICEBOARD_DB_PORT=6379
 ENV NOTICEBOARD_DB_USERNAME="" NOTICEBOARD_DB_PASSWORD=""
 
-HEALTHCHECK --interval= --timeout=30s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=60s --timeout=30s --start-period=120s --retries=3 \
     CMD curl -f -s http://localhost:${PORT}/status || exit 1
 
 ENTRYPOINT SERVER_PORT=${PORT} java -jar app.jar
