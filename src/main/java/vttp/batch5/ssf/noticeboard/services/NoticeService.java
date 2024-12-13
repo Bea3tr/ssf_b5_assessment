@@ -40,7 +40,7 @@ public class NoticeService {
 		RequestEntity<String> req = RequestEntity.post(PUB_URL)
 			.contentType(MediaType.APPLICATION_JSON)
 			.accept(MediaType.APPLICATION_JSON)
-			.body("{notice}");
+			.body(noticeObj);
 
 		RestTemplate template = new RestTemplate();
 		try {
