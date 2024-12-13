@@ -40,7 +40,7 @@ public class NoticeService {
 		RequestEntity<String> req = RequestEntity.post(PUB_URL)
 			.contentType(MediaType.APPLICATION_JSON)
 			.accept(MediaType.APPLICATION_JSON)
-			.body(noticeObj);
+			.body("{notice}");
 
 		RestTemplate template = new RestTemplate();
 		try {
@@ -52,9 +52,9 @@ public class NoticeService {
 			return getPostId(payload);
 			
 		} catch (Exception ex) {
-			int start = ex.getMessage().indexOf("\"{");
-			int end = ex.getMessage().indexOf("}\"");
-			String errorJson = ex.getMessage().substring(start+1, end+1);
+			int start = ex.getMessage().indexOf("{");
+			int end = ex.getMessage().lastIndexOf("}");
+			String errorJson = ex.getMessage().substring(start, end+1);
 			logger.info("[Service] " + errorJson);
 			String message = Json.createReader(new StringReader(errorJson)).readObject().getString("message");
 			// Unsuccessful - return error message
