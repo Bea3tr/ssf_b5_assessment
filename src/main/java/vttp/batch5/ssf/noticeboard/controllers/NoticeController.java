@@ -3,6 +3,7 @@ package vttp.batch5.ssf.noticeboard.controllers;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,7 +53,7 @@ public class NoticeController {
         return "view2";
     }
 
-    @GetMapping("/status")
+    @GetMapping(path="/status", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<String> checkStatus() {
         return noticeSvc.checkHealth();

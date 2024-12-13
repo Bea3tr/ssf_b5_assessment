@@ -33,6 +33,7 @@ public class NoticeRepository {
 	public void insertNotices(String payload) {
 		JsonReader reader = Json.createReader(new StringReader(payload));
 		JsonObject obj = reader.readObject();
+		// Insert payload as JSON String, post id as key name
 		redisTemplate.opsForValue().set(obj.getString("id"), obj.toString());
 	}
 
