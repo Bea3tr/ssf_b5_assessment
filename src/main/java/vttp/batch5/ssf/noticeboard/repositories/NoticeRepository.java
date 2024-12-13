@@ -1,6 +1,23 @@
 package vttp.batch5.ssf.noticeboard.repositories;
 
+import java.io.StringReader;
+
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Repository;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+
+@Repository
 public class NoticeRepository {
+
+	@Autowired @Qualifier("notice")
+	private RedisTemplate<String, Object> redisTemplate;
 
 	// TODO: Task 4
 	// You can change the signature of this method by adding any number of parameters
@@ -14,8 +31,15 @@ public class NoticeRepository {
 	 *
 	 *
 	 */
-	public void insertNotices() {
+	// set obj.getString("id") obj.toString()
+	public void insertNotices(String payload) {
+		JsonReader reader = Json.createReader(new StringReader(payload));
+		JsonObject obj = reader.readObject();
+		redisTemplate.opsForValue().set(obj.getString("id"), obj.toString());
+	}
 
+	public void checkHealth() throws Exception {
+		redisTemplate.randomKey();
 	}
 
 
